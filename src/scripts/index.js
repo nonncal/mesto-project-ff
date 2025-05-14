@@ -1,13 +1,6 @@
-// @todo: Темплейт карточки
-
-// @todo: DOM узлы
-
-// @todo: Функция создания карточки
-
-// @todo: Функция удаления карточки
-
-// @todo: Вывести карточки на страницу
 import '../pages/index.css';
+import { initialCards } from './cards';
+
 
 const cardTemplate = document.querySelector('#card-template').content;
 const cardContentTemplate = cardTemplate.querySelector('.card').cloneNode(true);
@@ -36,3 +29,5 @@ const deleteCard = (card) => {
 initialCards.forEach((card) => {
   cardsList.append(createCard(card.name, card.link, deleteCard));
 });
+
+
