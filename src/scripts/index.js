@@ -7,6 +7,7 @@
 // @todo: Функция удаления карточки
 
 // @todo: Вывести карточки на страницу
+import '../pages/index.css';
 
 const cardTemplate = document.querySelector('#card-template').content;
 const cardContentTemplate = cardTemplate.querySelector('.card').cloneNode(true);
