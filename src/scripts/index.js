@@ -55,6 +55,8 @@ const handleFormSubmitCard = (evt) => {
   cardImage.alt = cardNameInput.value;
   cardsList.prepend(createCard(cardNameInput.value, cardLinkInput.value, deleteCard, setLike, openImagePopup));
   closePopup(createCardPopup);
+  cardLinkInput.value = '';
+  cardNameInput.value = '';
 };
 
 cardForm.addEventListener('submit', handleFormSubmitCard);
