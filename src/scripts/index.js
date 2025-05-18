@@ -37,10 +37,8 @@ createCardButton.addEventListener('click',() => openModal(createCardPopup));
 
 const handleFormSubmitProfile = (evt) => {
   evt.preventDefault();
-  const name = profileName;
-  const job = profileDescription;
-  name.textContent = nameInput.value;
-  job.textContent = jobInput.value;
+  profileName.textContent = nameInput.value;
+  profileDescription.textContent = jobInput.value;
   closeModal(editProfilePopup);
 };
 
@@ -49,7 +47,7 @@ editProfileForm.addEventListener('submit', handleFormSubmitProfile);
 
 const handleFormSubmitCard = (evt) => {
   evt.preventDefault();
-  cardsList.prepend(createCard({cardName: cardNameInput.value, cardLink: cardLinkInput.value, deleteCard, setLike, openImagePopup, cardTemplate, cardsList}));
+  cardsList.prepend(createCard({cardName: cardNameInput.value, cardLink: cardLinkInput.value, deleteCard, setLike, openImagePopup, cardTemplate}));
   closeModal(createCardPopup);
   cardForm.reset();
 };
@@ -63,22 +61,16 @@ const openImagePopup = (imageSrc, imageName) => {
   openModal(imagePopup);
 };
 
-popupCloseButton.forEach((button) => {
-  button.addEventListener('click', () => {
-    closeModal(editProfilePopup);
-    closeModal(createCardPopup);
-    closeModal(imagePopup);
-  });
-});
-
 allPopups.forEach((popup) => {
   popup.addEventListener('click', (evt) => {
     if (evt.target === popup) {
       closeModal(popup);
     };
   });
+  const popupCloseButton =  popup.querySelector('.popup__close');
+  popupCloseButton.addEventListener('click', () => closeModal(popupCloseButton.closest('.popup')));
 });
 
 initialCards.forEach((card) => {
-  cardsList.append(createCard({cardName: card.name, cardLink: card.link, deleteCard, setLike, openImagePopup, cardTemplate, cardsList}));
+  cardsList.append(createCard({cardName: card.name, cardLink: card.link, deleteCard, setLike, openImagePopup, cardTemplate}));
 });

@@ -1,4 +1,4 @@
-export const createCard = ({cardName, cardLink, deleteCard, setLike, openImagePopup, cardTemplate, cardsList}) => {
+export const createCard = ({cardName, cardLink, deleteCard, setLike, openImagePopup, cardTemplate}) => {
   
   const cardContent = cardTemplate.cloneNode(true);
   const cardTitle = cardContent.querySelector('.card__title');
