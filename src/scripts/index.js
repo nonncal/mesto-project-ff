@@ -68,7 +68,7 @@ allPopups.forEach((popup) => {
     };
   });
   const popupCloseButton =  popup.querySelector('.popup__close');
-  popupCloseButton.addEventListener('click', () => closeModal(popupCloseButton.closest('.popup')));
+  popupCloseButton.addEventListener('click', () => closeModal(popup));
 });
 
 initialCards.forEach((card) => {
