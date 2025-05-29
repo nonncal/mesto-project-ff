@@ -27,18 +27,17 @@ const imagePopup = document.querySelector('.popup_type_image');
 const imagePopupCaption = imagePopup.querySelector('.popup__caption');
 const imagePopupImage = imagePopup.querySelector('.popup__image');
 
-const formsList = Array.from(document.querySelectorAll('.popup__form'));
+const formsList = document.querySelectorAll('.popup__form');
 
 editProfileButton.addEventListener('click',() => {
   openModal(editProfilePopup);
   nameInput.value = profileName.textContent;
   jobInput.value = profileDescription.textContent;
-  enableValidation(editProfilePopup);
+  clearValidation(editProfileForm);
 });
 
 createCardButton.addEventListener('click',() => {
   openModal(createCardPopup);
-  enableValidation(createCardPopup);
 });
 
 const handleFormSubmitProfile = (evt) => {
@@ -61,6 +60,9 @@ const handleFormSubmitCard = (evt) => {
 cardForm.addEventListener('submit', handleFormSubmitCard);
 
 const openImagePopup = (imageSrc, imageName) => {
+  //@fix исправляет показ предыдущей картинки при открытии попапа
+  imagePopupImage.src = '';
+  imagePopupImage.alt = '';
   imagePopupImage.src = imageSrc;
   imagePopupImage.alt = imageName;
   imagePopupCaption.textContent = imageName;
@@ -71,16 +73,16 @@ allPopups.forEach((popup) => {
   popup.addEventListener('click', (evt) => {
     if (evt.target === popup) {
       closeModal(popup);
-      clearValidation(popup);
     };
   });
   const popupCloseButton =  popup.querySelector('.popup__close');
   popupCloseButton.addEventListener('click', () => {
     closeModal(popup);
-    clearValidation(popup);
   });
 });
 
 initialCards.forEach((card) => {
   cardsList.append(createCard({cardName: card.name, cardLink: card.link, deleteCard, setLike, openImagePopup, cardTemplate}));
 });
+
+enableValidation(formsList);

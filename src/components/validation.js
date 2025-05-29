@@ -1,5 +1,3 @@
-// const regex = //g
-
 const showInputError = (formElement, inputElement, errorMessage) => {
   const errorElement = formElement.querySelector(`.${inputElement.name}-error`);
   inputElement.classList.add('popup__input_type-error');
@@ -15,6 +13,12 @@ const hideInputError = (formElement, inputElement) => {
 };
 
 const checkInputValidity = (formElement, inputElement) => {
+  if (inputElement.validity.patternMismatch) {
+    inputElement.setCustomValidity(inputElement.dataset.errorMessage);
+  } else {
+    inputElement.setCustomValidity('');
+  };
+
   if (!inputElement.validity.valid){
     showInputError(formElement, inputElement, inputElement.validationMessage)
   } else {
@@ -30,40 +34,27 @@ const setEventListeners = (formElement) => {
     input.addEventListener('input', () => {
       checkInputValidity(formElement, input);
       toggleButtonState(inputsList, buttonElement);
-    })
+    });
   });
 };
 
-//@todo
-// const disableEventListeners = (formElement) => {
-//   const inputsList = Array.from(formElement.querySelectorAll('.popup__input'));
-//   const buttonElement = formElement.querySelector('.popup__button');
-//   inputsList.forEach((input) => {
-//     input.removeEventListener('input', () => {
-//       checkInputValidity(formElement, input);
-//       toggleButtonState(inputsList, buttonElement);
-//     })
-//     hideInputError(formElement, input);
-//   });
-//   toggleButtonState(inputsList, buttonElement);
-// };
-
-
-export const enableValidation = (form) => {
+export const enableValidation = (formsList) => {
+  formsList.forEach((form) => {
     form.addEventListener('submit', (evt) => {
       evt.preventDefault();
     });
     setEventListeners(form);
+  });
 };
-
-//@todo 
 
 export const clearValidation = (form) => {
   const inputsList = Array.from(form.querySelectorAll('.popup__input'));
+  const buttonElement = form.querySelector('.popup__button');
   inputsList.forEach((input) => {
     hideInputError(form, input);
-  })
-  console.log('clear');
+    input.setCustomValidity('');
+  });
+  toggleButtonState(inputsList, buttonElement);
 };
 
 const hasInvalidInput = (inputsList) => {
