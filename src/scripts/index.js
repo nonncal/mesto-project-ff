@@ -2,6 +2,7 @@ import '../pages/index.css';
 import { closeModal, openModal } from '../components/modal.js';
 import { createCard, deleteCard, setLike } from '../components/card.js';
 import { initialCards } from './cards.js';
+import { enableValidation, clearValidation } from '../components/validation.js';
 
 const cardTemplate = document.querySelector('#card-template').content.querySelector('.card');
 const cardsList = document.querySelector('.places__list'); 
@@ -10,7 +11,6 @@ const editProfileButton = document.querySelector('.profile__edit-button');
 const createCardButton = document.querySelector('.profile__add-button');
 const editProfilePopup = document.querySelector('.popup_type_edit');
 const createCardPopup = document.querySelector('.popup_type_new-card');
-const popupCloseButton = document.querySelectorAll('.popup__close');
 const allPopups = document.querySelectorAll('.popup');
 
 const cardForm = document.forms['new-place'];
@@ -27,13 +27,19 @@ const imagePopup = document.querySelector('.popup_type_image');
 const imagePopupCaption = imagePopup.querySelector('.popup__caption');
 const imagePopupImage = imagePopup.querySelector('.popup__image');
 
+const formsList = Array.from(document.querySelectorAll('.popup__form'));
+
 editProfileButton.addEventListener('click',() => {
   openModal(editProfilePopup);
   nameInput.value = profileName.textContent;
   jobInput.value = profileDescription.textContent;
+  enableValidation(editProfilePopup);
 });
 
-createCardButton.addEventListener('click',() => openModal(createCardPopup));
+createCardButton.addEventListener('click',() => {
+  openModal(createCardPopup);
+  enableValidation(createCardPopup);
+});
 
 const handleFormSubmitProfile = (evt) => {
   evt.preventDefault();
@@ -65,10 +71,14 @@ allPopups.forEach((popup) => {
   popup.addEventListener('click', (evt) => {
     if (evt.target === popup) {
       closeModal(popup);
+      clearValidation(popup);
     };
   });
   const popupCloseButton =  popup.querySelector('.popup__close');
-  popupCloseButton.addEventListener('click', () => closeModal(popup));
+  popupCloseButton.addEventListener('click', () => {
+    closeModal(popup);
+    clearValidation(popup);
+  });
 });
 
 initialCards.forEach((card) => {
