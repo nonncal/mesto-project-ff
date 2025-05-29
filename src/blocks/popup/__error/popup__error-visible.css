@@ -1,4 +1,4 @@
-.popup__input-error_active {
+.popup__error_visible {
   color: rgba(255, 0, 0, 1);
   font-weight: 400;
   font-size: 12px;
