@@ -1,8 +1,8 @@
 import '../pages/index.css';
 import { closeModal, openModal } from '../components/modal.js';
-import { createCard, deleteCard, setLike } from '../components/card.js';
-import { initialCards } from './cards.js';
+import { createCard, removeCard, showLike } from '../components/card.js';
 import { enableValidation, clearValidation } from '../components/validation.js';
+import { getUserInfo, getInitialCards, updateUserInfo, addNewCard, deleteCard, putLike, removeLike } from '../components/api.js';
 
 const cardTemplate = document.querySelector('#card-template').content.querySelector('.card');
 const cardsList = document.querySelector('.places__list'); 
@@ -27,8 +27,6 @@ const imagePopup = document.querySelector('.popup_type_image');
 const imagePopupCaption = imagePopup.querySelector('.popup__caption');
 const imagePopupImage = imagePopup.querySelector('.popup__image');
 
-const formsList = document.querySelectorAll('.popup__form');
-
 editProfileButton.addEventListener('click',() => {
   openModal(editProfilePopup);
   nameInput.value = profileName.textContent;
@@ -48,9 +46,11 @@ createCardButton.addEventListener('click',() => {
 
 const handleFormSubmitProfile = (evt) => {
   evt.preventDefault();
-  profileName.textContent = nameInput.value;
-  profileDescription.textContent = jobInput.value;
-  closeModal(editProfilePopup);
+  updateUserInfo(nameInput.value, jobInput.value).then((newUserInfo) => {
+    profileName.textContent = newUserInfo.name;
+    profileDescription.textContent = newUserInfo.about;
+    closeModal(editProfilePopup);
+  });
 };
 
 editProfileForm.addEventListener('submit', handleFormSubmitProfile);
@@ -58,8 +58,10 @@ editProfileForm.addEventListener('submit', handleFormSubmitProfile);
 
 const handleFormSubmitCard = (evt) => {
   evt.preventDefault();
-  cardsList.prepend(createCard({cardName: cardNameInput.value, cardLink: cardLinkInput.value, deleteCard, setLike, openImagePopup, cardTemplate}));
-  closeModal(createCardPopup);
+  addNewCard(cardNameInput.value, cardLinkInput.value).then((newCard) => {
+    cardsList.prepend(createCard({cardName: newCard.name, cardLink: newCard.link, cardLikes: newCard.likes, cardId: newCard._id, removeCard, deleteCard, showLike, putLike, removeLike, openImagePopup, cardTemplate}));
+    closeModal(createCardPopup);
+  });
   cardForm.reset();
   clearValidation(createCardPopup, {
   inputSelector: '.popup__input',
@@ -94,8 +96,13 @@ allPopups.forEach((popup) => {
   });
 });
 
-initialCards.forEach((card) => {
-  cardsList.append(createCard({cardName: card.name, cardLink: card.link, deleteCard, setLike, openImagePopup, cardTemplate}));
+
+Promise.all([getUserInfo(), getInitialCards()]).then(([userInfo, cards]) => {
+  profileName.textContent = userInfo.name;
+  profileDescription.textContent = userInfo.about;
+  cards.forEach((card) => {
+    cardsList.append(createCard({cardName: card.name, cardLink: card.link, cardLikes: card.likes, cardId: card._id, userId: userInfo._id, ownerId: card.owner._id, removeCard, deleteCard, showLike, putLike, removeLike, openImagePopup, cardTemplate}));
+  })
 });
 
 enableValidation({
