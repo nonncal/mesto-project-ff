@@ -1,4 +1,4 @@
-export const createCard = ({cardName, cardLink, cardLikes, cardId, userId, ownerId, removeCard, deleteCard, showLike, putLike, removeLike, openImagePopup, cardTemplate}) => {
+export const createCard = ({cardName, cardLink, cardLikes, cardId, userId, ownerId, removeCard, deleteHandler, showLike, putLike, removeLike, openImagePopup, showModal, cardTemplate}) => {
   
   const cardContent = cardTemplate.cloneNode(true);
   const cardTitle = cardContent.querySelector('.card__title');
@@ -10,7 +10,7 @@ export const createCard = ({cardName, cardLink, cardLikes, cardId, userId, owner
   likeButton.addEventListener('click', () => showLike(cardId, likeButton, putLike, removeLike, likeCount));
 
   if (userId === ownerId){
-    cardDeleteButton.addEventListener('click', () => removeCard(cardContent, deleteCard, cardId));
+    cardDeleteButton.addEventListener('click', () =>  removeCard(cardContent, deleteHandler, cardId));
   } else {
     cardDeleteButton.style.display = 'none';
   };
@@ -28,8 +28,8 @@ export const createCard = ({cardName, cardLink, cardLikes, cardId, userId, owner
   return cardContent;
 };
 
-export const removeCard = (card, deleteCard, cardId) => {
-  deleteCard(cardId).then(() => card.remove());
+export const removeCard = (card, deleteHandler, cardId) => {
+  deleteHandler(card, cardId);
 };
 
 export const showLike = (cardId, likeButton, putLike, removeLike, likeCount) => {

@@ -25,12 +25,15 @@ const jobInput = editProfileForm.querySelector('.popup__input_type_description')
 const profileName = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
 
-const updateAvatarForm = document.forms['update-avatar'];
-const avatarInput = updateAvatarPopup.querySelector('.popup__input_type_url');
-
 const imagePopup = document.querySelector('.popup_type_image');
 const imagePopupCaption = imagePopup.querySelector('.popup__caption');
 const imagePopupImage = imagePopup.querySelector('.popup__image');
+
+const updateAvatarForm = document.forms['update-avatar'];
+const avatarInput = updateAvatarPopup.querySelector('.popup__input_type_url');
+
+const confirmDeleteCardPopup = document.querySelector('.popup_type_confirm-delete');
+const confirmDeleteCardForm = document.forms['confirm-delete'];
 
 editProfileButton.addEventListener('click',() => {
   openModal(editProfilePopup);
@@ -74,7 +77,7 @@ const handleFormSubmitCard = (evt) => {
   const saveCardButton = createCardPopup.querySelector('.popup__button');
   saveCardButton.textContent = 'Сохранение...';
   addNewCard(cardNameInput.value, cardLinkInput.value).then((newCard) => {
-    cardsList.prepend(createCard({cardName: newCard.name, cardLink: newCard.link, cardLikes: newCard.likes, cardId: newCard._id, removeCard, deleteCard, showLike, putLike, removeLike, openImagePopup, cardTemplate}));
+    cardsList.prepend(createCard({cardName: newCard.name, cardLink: newCard.link, cardLikes: newCard.likes, cardId: newCard._id, removeCard, deleteHandler, showLike, putLike, removeLike, openImagePopup, cardTemplate}));
     closeModal(createCardPopup);
   }).finally(() => {
     saveCardButton.textContent = 'Сохранить';
@@ -101,9 +104,26 @@ const handleFormSubmitAvatar = (evt) => {
   }).finally(() => {
     avatarUpdateButton.textContent = 'Сохранить';
   });
-}
+};
 
 updateAvatarForm.addEventListener('submit', handleFormSubmitAvatar);
+
+const deleteHandler = (card, cardId) => {
+  const handleFormSubmitDeleteCard = (evt) => {
+    const confirmDeleteCardButton = confirmDeleteCardPopup.querySelector('.popup__button');
+    confirmDeleteCardButton.textContent = 'Удаление...';
+    evt.preventDefault();
+    deleteCard(cardId).then(() => {
+      card.remove();
+      closeModal(confirmDeleteCardPopup);
+    }).finally(() => {
+      confirmDeleteCardButton.textContent = 'Да';
+    })
+  }
+  openModal(confirmDeleteCardPopup);
+  confirmDeleteCardForm.addEventListener('submit', handleFormSubmitDeleteCard, {once: true});
+};
+
 
 const openImagePopup = (imageSrc, imageName) => {
   //@fix исправляет показ предыдущей картинки при открытии попапа
@@ -133,7 +153,7 @@ Promise.all([getUserInfo(), getInitialCards()]).then(([userInfo, cards]) => {
   profileName.textContent = userInfo.name;
   profileDescription.textContent = userInfo.about;
   cards.forEach((card) => {
-    cardsList.append(createCard({cardName: card.name, cardLink: card.link, cardLikes: card.likes, cardId: card._id, userId: userInfo._id, ownerId: card.owner._id, removeCard, deleteCard, showLike, putLike, removeLike, openImagePopup, cardTemplate}));
+    cardsList.append(createCard({cardName: card.name, cardLink: card.link, cardLikes: card.likes, cardId: card._id, userId: userInfo._id, ownerId: card.owner._id, removeCard, deleteHandler, showLike, putLike, removeLike, openImagePopup, cardTemplate}));
   })
 });
 
