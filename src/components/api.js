@@ -72,13 +72,13 @@ export const removeLike = (cardId) => {
 };
 
 export const updateAvatar = (avatarLink) => {
-  return fetch(`${config.baseUrl}/users/me/avatar`, {
-    method: 'PATCH',
-    headers: config.headers,
-    body: JSON.stringify({
-      avatar: avatarLink
-    })
-  }).then(config.handleResponse)
+    return fetch(`${config.baseUrl}/users/me/avatar`, {
+      method: 'PATCH',
+      headers: config.headers,
+      body: JSON.stringify({
+        avatar: avatarLink
+      })
+    }).then(config.handleResponse)
   .catch(err => console.log(err));
 };
 
