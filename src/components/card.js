@@ -1,4 +1,4 @@
-export const createCard = ({cardName, cardLink, cardLikes, cardId, userId, ownerId, removeCard, deleteHandler, showLike, putLike, removeLike, openImagePopup, showModal, cardTemplate}) => {
+export const createCard = ({cardName, cardLink, cardLikes, cardId, userId, ownerId, removeCard, deleteHandler, showLike, putLike, removeLike, openImagePopup, cardTemplate}) => {
   
   const cardContent = cardTemplate.cloneNode(true);
   const cardTitle = cardContent.querySelector('.card__title');
@@ -37,11 +37,11 @@ export const showLike = (cardId, likeButton, putLike, removeLike, likeCount) => 
     removeLike(cardId).then((cardInfo) => {
       likeCount.textContent = cardInfo.likes.length;
       likeButton.classList.toggle('card__like-button_is-active');
-    });
+    }).catch(err => console.log(err));
   } else {
     putLike(cardId).then((cardInfo) => {
       likeCount.textContent = cardInfo.likes.length;
       likeButton.classList.toggle('card__like-button_is-active');
-    });
+    }).catch(err => console.log(err));
   }
 };

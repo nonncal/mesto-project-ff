@@ -64,7 +64,9 @@ const handleFormSubmitProfile = (evt) => {
     profileName.textContent = newUserInfo.name;
     profileDescription.textContent = newUserInfo.about;
     closeModal(editProfilePopup);
-  }).finally(() => {
+  })
+  .catch(err => console.log(err))
+  .finally(() => {
     saveProfileButton.textContent = 'Сохранить';
   });
 };
@@ -79,16 +81,18 @@ const handleFormSubmitCard = (evt) => {
   addNewCard(cardNameInput.value, cardLinkInput.value).then((newCard) => {
     cardsList.prepend(createCard({cardName: newCard.name, cardLink: newCard.link, cardLikes: newCard.likes, cardId: newCard._id, removeCard, deleteHandler, showLike, putLike, removeLike, openImagePopup, cardTemplate}));
     closeModal(createCardPopup);
-  }).finally(() => {
+    cardForm.reset();
+    clearValidation(createCardPopup, {
+    inputSelector: '.popup__input',
+    submitButtonSelector: '.popup__button',
+    inactiveButtonClass: 'popup__button_disabled',
+    inputErrorClass: 'popup__input_type_error',
+    errorClass: 'popup__error_visible'
+    });
+  })
+  .catch(err => console.log(err))
+  .finally(() => {
     saveCardButton.textContent = 'Сохранить';
-  });
-  cardForm.reset();
-  clearValidation(createCardPopup, {
-  inputSelector: '.popup__input',
-  submitButtonSelector: '.popup__button',
-  inactiveButtonClass: 'popup__button_disabled',
-  inputErrorClass: 'popup__input_type_error',
-  errorClass: 'popup__error_visible'
   });
 };
 
@@ -101,7 +105,9 @@ const handleFormSubmitAvatar = (evt) => {
   updateAvatar(avatarInput.value).then((userInfo) => {
     avatar.style.backgroundImage = `url(${userInfo.avatar})`;
     closeModal(updateAvatarPopup);
-  }).finally(() => {
+  })
+  .catch(err => console.log(err))
+  .finally(() => {
     avatarUpdateButton.textContent = 'Сохранить';
   });
 };
@@ -113,20 +119,21 @@ const deleteHandler = (card, cardId) => {
     const confirmDeleteCardButton = confirmDeleteCardPopup.querySelector('.popup__button');
     confirmDeleteCardButton.textContent = 'Удаление...';
     evt.preventDefault();
-    deleteCard(cardId).then(() => {
+    deleteCard(cardId)
+    .then(() => {
       card.remove();
       closeModal(confirmDeleteCardPopup);
-    }).finally(() => {
+    })
+    .catch(err => console.log(err))
+    .finally(() => {
       confirmDeleteCardButton.textContent = 'Да';
     })
   }
   openModal(confirmDeleteCardPopup);
-  confirmDeleteCardForm.addEventListener('submit', handleFormSubmitDeleteCard, {once: true});
+  confirmDeleteCardForm.onsubmit = handleFormSubmitDeleteCard;
 };
 
-
 const openImagePopup = (imageSrc, imageName) => {
-  //@fix исправляет показ предыдущей картинки при открытии попапа
   imagePopupImage.src = '';
   imagePopupImage.alt = '';
   imagePopupImage.src = imageSrc;
@@ -155,7 +162,7 @@ Promise.all([getUserInfo(), getInitialCards()]).then(([userInfo, cards]) => {
   cards.forEach((card) => {
     cardsList.append(createCard({cardName: card.name, cardLink: card.link, cardLikes: card.likes, cardId: card._id, userId: userInfo._id, ownerId: card.owner._id, removeCard, deleteHandler, showLike, putLike, removeLike, openImagePopup, cardTemplate}));
   })
-});
+}).catch(err => console.log(err));
 
 enableValidation({
   formSelector: '.popup__form',
